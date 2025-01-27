@@ -23,10 +23,10 @@ router.post("/analyzePhotos", async (req: Request, res: Response) => {
 
 		if (!users || !Array.isArray(users)) {
 			return res.status(400).json({
-				success: false,
-				message: 'Invalid input. "users" must be an array.',
+			  success: false,
+			  message: 'Invalid input. "users" must be an array of objects with "userid" and "profilephoto".',
 			});
-		}
+		  }
 
 		const client = getVisionClient();
 		const results: AnalysisResult[] = [];
