@@ -5,7 +5,7 @@ Installation
 
 Install the package using npm:
 
-npm install photo-analyzer
+npm install photo-analyzer-api
 
 Setup
 
