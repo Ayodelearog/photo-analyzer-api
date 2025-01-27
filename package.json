@@ -1,6 +1,6 @@
 {
 	"name": "photo-analyzer-api",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "An Express.js package for analyzing profile photos",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
