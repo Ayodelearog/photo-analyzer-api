@@ -8,4 +8,4 @@ export interface ServerOptions {
  * Create and start the server.
  * @param options Configuration options for the server.
  */
-export declare function createServer(options?: ServerOptions): import("express-serve-static-core").Express;
+export declare function createServer(options?: ServerOptions): express.Application;

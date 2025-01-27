@@ -28,10 +28,11 @@ const getVisionClient = () => {
     let credentials;
     try {
         // Decode the base64 string and parse the JSON
-        const decodedCredentials = Buffer.from(base64Credentials, 'base64').toString('utf-8');
+        const decodedCredentials = Buffer.from(base64Credentials, 'base64').toString('utf-8').trim().replace(/\s/g, '');
         credentials = JSON.parse(decodedCredentials);
     }
     catch (error) {
+        console.log(credentials);
         throw new Error("Failed to decode or parse the credentials. Ensure the base64 string is valid.");
     }
     // Initialize the Vision API client with the decoded credentials

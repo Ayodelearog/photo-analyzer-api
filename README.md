@@ -32,7 +32,7 @@ Usage
 
     Import the necessary functions from the package:
 
-    const { createServer, analyzePhotosRoute } = require('photo-analyzer');
+    const { createServer, analyzePhotosRoute } = require('photo-analyzer-api');
 
     Create and start the server:
 
