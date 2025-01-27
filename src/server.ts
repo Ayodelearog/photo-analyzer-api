@@ -1,36 +1,64 @@
-import express, { type Request, type Response, NextFunction } from "express"
-import dotenv from "dotenv"
-import analyzePhotos from "./routes/analyzePhotos"
+import express, { Request, Response, NextFunction } from "express";
+import analyzePhotosRoute from "./routes/analyzePhotos";
+import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
-const port = process.env.PORT || 3000
+export interface ServerOptions {
+	port?: number;
+	routes?: (app: express.Application) => void;
+	onError?: (
+		err: Error,
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) => void;
+}
 
+/**
+ * Create and start the server.
+ * @param options Configuration options for the server.
+ */
+export function createServer(options: ServerOptions = {}): express.Application {
+	const app: express.Application = express();
+	const port: number = options.port || Number(process.env.PORT) || 3000;
 
-app.use(express.json())
+	// Middleware to parse JSON request bodies
+	app.use(express.json());
 
+	// Logging middleware
+	app.use((req, res, next) => {
+		// console.log(`${req.method} ${req.url}`);
+		next();
+	});
 
-app.use((req, res, next) => {
-  // console.log(`${req.method} ${req.url}`)
-  next()
-})
+	// Add default or custom routes
+	if (options.routes) {
+		options.routes(app);
+	} else {
+		app.use("/api", analyzePhotosRoute);
+	}
 
+	// 404 handler
+	app.use((req, res) => {
+		res.status(404).json({ error: "Not Found" });
+	});
 
-app.use("/api", analyzePhotos)
+	// Error handler
+	app.use(
+		options.onError ||
+			((err: Error, req: Request, res: Response, next: NextFunction) => {
+				console.error(err.stack);
+				res.status(500).json({ error: "Internal Server Error" });
+			})
+	);
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ error: "Not Found" })
-})
+	// Start the server
+	app.listen(port, () => {
+		console.log(`Server is running on port ${port}`);
+	});
 
-// Error handler
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  // console.error(err.stack)
-  res.status(500).json({ error: "Internal Server Error" })
-})
+	return app;
+}
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`)
-})
 

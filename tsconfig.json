@@ -1,15 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es2018",
-    "module": "commonjs",
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "strict": true,
+    "target": "ES6",
+    "module": "CommonJS",
+    "declaration": true,              // Enable declaration file generation
+    "declarationDir": "./dist",       // Output the .d.ts files to the dist folder
+    "outDir": "./dist",               // Ensure compiled JS goes to dist
+    "rootDir": "./src",               // Ensure the source files are in src
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "exclude": ["node_modules"]
 }
-
