@@ -1,11 +1,9 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from 'express';
 export interface ServerOptions {
     port?: number;
     routes?: (app: express.Application) => void;
-    onError?: (err: Error, req: Request, res: Response, next: NextFunction) => void;
 }
-/**
- * Create and start the server.
- * @param options Configuration options for the server.
- */
-export declare function createServer(options?: ServerOptions): express.Application;
+export declare function createServer(options?: ServerOptions): {
+    start: () => void;
+    app: import("express-serve-static-core").Express;
+};

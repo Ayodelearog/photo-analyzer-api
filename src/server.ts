@@ -1,64 +1,49 @@
-import express, { Request, Response, NextFunction } from "express";
-import analyzePhotosRoute from "./routes/analyzePhotos";
-import dotenv from "dotenv";
-
-dotenv.config();
+import express from 'express';
+import  analyzePhotosRoute  from './routes/analyzePhotos';
 
 export interface ServerOptions {
-	port?: number;
-	routes?: (app: express.Application) => void;
-	onError?: (
-		err: Error,
-		req: Request,
-		res: Response,
-		next: NextFunction
-	) => void;
+  port?: number;
+  routes?: (app: express.Application) => void;
 }
 
-/**
- * Create and start the server.
- * @param options Configuration options for the server.
- */
-export function createServer(options: ServerOptions = {}): express.Application {
-	const app: express.Application = express();
-	const port: number = options.port || Number(process.env.PORT) || 3000;
+export function createServer(options: ServerOptions = {}) {
+  const app = express();
+  const port = options.port || Number(process.env.PORT) || 3000;
 
-	// Middleware to parse JSON request bodies
-	app.use(express.json());
+  // Middleware to parse JSON request bodies
+  app.use(express.json());
 
-	// Logging middleware
-	app.use((req, res, next) => {
-		// console.log(`${req.method} ${req.url}`);
-		next();
-	});
+  // Add routes
+  if (options.routes) {
+    options.routes(app);
+  } else {
+    app.use('/api', analyzePhotosRoute);
+  }
 
-	// Add default or custom routes
-	if (options.routes) {
-		options.routes(app);
-	} else {
-		app.use("/api", analyzePhotosRoute);
-	}
+  // 404 handler
+  app.use((req, res) => {
+    res.status(404).json({ error: 'Not Found' });
+  });
 
-	// 404 handler
-	app.use((req, res) => {
-		res.status(404).json({ error: "Not Found" });
-	});
+  // Error handler
+  app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Internal Server Error' });
+  });
 
-	// Error handler
-	app.use(
-		options.onError ||
-			((err: Error, req: Request, res: Response, next: NextFunction) => {
-				console.error(err.stack);
-				res.status(500).json({ error: "Internal Server Error" });
-			})
-	);
-
-	// Start the server
-	app.listen(port, () => {
-		console.log(`Server is running on port ${port}`);
-	});
-
-	return app;
+  return {
+    start: () => {
+      app.listen(port, () => {
+        console.log(`Server is running on http://localhost:${port}`);
+        console.log('Press CTRL-C to stop');
+      });
+    },
+    app
+  };
 }
 
-
+// If this file is run directly, start the server
+if (require.main === module) {
+  const server = createServer();
+  server.start();
+}

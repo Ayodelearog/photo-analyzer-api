@@ -11,7 +11,7 @@ export const getVisionClient = (): ImageAnnotatorClient => {
   }
 
   // Get the base64-encoded credentials from the environment variable
-  const base64Credentials = process.env.GOOGLE_CREDENTIALS_BASE64?.trim().replace(/[`'"]/g, '');
+  const base64Credentials = process.env.GOOGLE_CREDENTIALS_BASE64?.trim().replace(/['"]/g, '');
 
   if (!base64Credentials) {
     throw new Error("Base64-encoded credentials string is required in the environment variable GOOGLE_CREDENTIALS_BASE64.");
