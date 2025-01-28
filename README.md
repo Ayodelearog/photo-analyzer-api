@@ -1,6 +1,17 @@
-Photo Analyzer
+Photo Analyzer API
 
 A Node.js package for analyzing profile photos using Google Cloud Vision API.
+Table of Contents
+
+    Installation
+    Setup
+    Usage
+    API Endpoints
+    Error Handling
+    Troubleshooting
+    Contributing
+    License
+
 Installation
 
 Install the package using npm:
@@ -30,64 +41,51 @@ Setup
 
 Usage
 
-    Import the necessary functions from the package:
+    Create a new file (e.g., server.js) and add the following code:
 
+    require('dotenv').config();
     const { createServer, analyzePhotosRoute } = require('photo-analyzer-api');
 
-    Create and start the server:
-
     const server = createServer({
-      port: 3000, // Optional: defaults to process.env.PORT or 3000
+      port: process.env.PORT || 3000,
       routes: (app) => {
         app.use('/api', analyzePhotosRoute);
       },
-      // Optional: custom error handler
       onError: (err, req, res, next) => {
         console.error(err);
         res.status(500).json({ error: 'Custom error message' });
       }
     });
 
-    Make a POST request to /api/analyzePhotos with the following JSON body:
+    server.start();
 
+    Run your server:
+
+    node server.js
+
+    You should see output indicating that your server is running.
+
+API Endpoints
+POST /api/analyzePhotos
+
+Analyzes profile photos for face detection and safe search.
+
+Request Body:
+
+{
+  "users": [
     {
-      "users": [
-        {
-          "userid": "user1",
-          "profilephoto": "https://example.com/photo1.jpg"
-        },
-        {
-          "userid": "user2",
-          "profilephoto": "https://example.com/photo2.jpg"
-        }
-      ]
-    }
-
-    The API will return a JSON response with the analysis results:
-
+      "userid": "user1",
+      "profilephoto": "https://example.com/photo1.jpg"
+    },
     {
-      "success": true,
-      "data": [
-        {
-          "userid": "user1",
-          "results": {
-            "faces": [...],
-            "safeSearch": {...}
-          }
-        },
-        {
-          "userid": "user2",
-          "results": {
-            "faces": [...],
-            "safeSearch": {...}
-          }
-        }
-      ]
+      "userid": "user2",
+      "profilephoto": "https://example.com/photo2.jpg"
     }
+  ]
+}
 
-Error Handling
-
-If there's an error analyzing a photo, the response will include an error message for that specific user:
+Response:
 
 {
   "success": true,
@@ -95,20 +93,57 @@ If there's an error analyzing a photo, the response will include an error messag
     {
       "userid": "user1",
       "results": {
-        "error": "Error analyzing photo: Invalid image URL"
+        "faces": [...],
+        "safeSearch": {...}
+      }
+    },
+    {
+      "userid": "user2",
+      "results": {
+        "faces": [...],
+        "safeSearch": {...}
       }
     }
   ]
 }
 
+Error Handling
+
+The API returns appropriate error messages for various scenarios:
+
+    Invalid input: 400 Bad Request
+    Server errors: 500 Internal Server Error
+    Photo analysis errors: Included in the response for each user
+
+Example error response:
+
+{
+  "success": false,
+  "message": "Server error: Failed to analyze photos"
+}
+
 Troubleshooting
 
-    If you encounter a "Failed to decode or parse the credentials" error, ensure your base64 string in the .env file is wrapped in backticks and doesn't contain any line breaks.
+    "Failed to decode or parse the credentials" error:
+        Ensure your base64 string in the .env file is wrapped in backticks and doesn't contain any line breaks.
+        Verify that the original JSON credentials file is valid.
 
-    Make sure your Google Cloud project has the Vision API enabled and your service account has the necessary permissions.
+    "Getting metadata from plugin failed" error:
+        Check that the image URLs are accessible and valid.
+        Ensure the image format is supported by Google Cloud Vision API.
 
-    Check that your .env file is in the root directory of your project and is being loaded correctly.
+    Server doesn't start:
+        Verify that all required environment variables are set correctly.
+        Check for any conflicting port usage.
 
-License
+    "Unauthorized" or "Permission denied" errors:
+        Ensure your Google Cloud project has the Vision API enabled.
+        Verify that your service account has the necessary permissions.
 
-This project is licensed under the MIT License.
+    High latency or timeouts:
+        Check your network connection.
+        Consider implementing retry logic for API calls.
+
+Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
