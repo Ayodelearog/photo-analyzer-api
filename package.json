@@ -1,44 +1,33 @@
 {
 	"name": "photo-analyzer-api",
-	"version": "1.0.7",
-	"description": "An Express.js package for analyzing profile photos",
+	"version": "1.1.1",
+	"description": "A function for analyzing profile photos using Google Cloud Vision API",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-	  "start": "node --no-deprecation dist/server.js",
-	  "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-	  "build": "tsc",
-	  "lint": "eslint . --ext .ts --fix",
-	  "prepublishOnly": "npm run build"
+		"build": "tsc",
+		"prepublishOnly": "npm run build"
 	},
 	"files": [
-	  "dist/**/*"
+		"dist/**/*"
 	],
 	"keywords": [
-	  "express",
-	  "google-vision",
-	  "photo-analysis",
-	  "api"
+		"google-vision",
+		"photo-analysis",
+		"api"
 	],
 	"repository": {
-	  "type": "git",
-	  "url": "git+https://github.com/Ayodelearog/photo-analyzer-api.git"
+		"type": "git",
+		"url": "git+https://github.com/Ayodelearog/photo-analyzer-api.git"
 	},
 	"author": "Ayodele Arogundade",
 	"license": "MIT",
 	"dependencies": {
-	  "@google-cloud/vision": "^3.1.3",
-	  "dotenv": "^16.4.7",
-	  "express": "^4.18.2"
+		"@google-cloud/vision": "^3.1.3",
+		"dotenv": "^16.4.7"
 	},
 	"devDependencies": {
-	  "@types/express": "^4.17.17",
-	  "@types/node": "^18.16.3",
-	  "@typescript-eslint/eslint-plugin": "^5.59.2",
-	  "@typescript-eslint/parser": "^5.59.2",
-	  "eslint": "^8.39.0",
-	  "ts-node": "^10.9.1",
-	  "ts-node-dev": "^2.0.0",
-	  "typescript": "^5.0.4"
+		"@types/node": "^18.16.3",
+		"typescript": "^5.0.4"
 	}
-  }
+}
