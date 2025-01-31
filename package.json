@@ -1,6 +1,6 @@
 {
 	"name": "photo-analyzer-api",
-	"version": "1.1.1",
+	"version": "1.2.1",
 	"description": "A function for analyzing profile photos using Google Cloud Vision API",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -28,6 +28,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "^18.16.3",
+		"@types/google-cloud__vision": "^0.19.1",
 		"typescript": "^5.0.4"
 	}
 }

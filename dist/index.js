@@ -11,40 +11,49 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.analyze = analyze;
 const visionClient_1 = require("./visionClient");
+function analyzeImage(client, image) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const [faceResponse] = yield client.faceDetection(image);
+        const faces = faceResponse.faceAnnotations || [];
+        const [safeSearchResponse] = yield client.safeSearchDetection(image);
+        const safeSearch = safeSearchResponse.safeSearchAnnotation || {};
+        return { faces, safeSearch };
+    });
+}
 function analyze(users) {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a;
         const client = (0, visionClient_1.getVisionClient)();
         const results = [];
         for (const user of users) {
             const { userid, profilephoto } = user;
             try {
-                const [faceResponse] = yield client.faceDetection(profilephoto);
-                const faces = (_a = faceResponse.faceAnnotations) !== null && _a !== void 0 ? _a : undefined;
-                const [safeSearchResponse] = yield client.safeSearchDetection(profilephoto);
-                const safeSearch = safeSearchResponse.safeSearchAnnotation;
+                let imageSource;
+                if (profilephoto.startsWith("data:image") ||
+                    /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/.test(profilephoto)) {
+                    // If it's a base64 string, convert it to a Buffer
+                    const base64Data = profilephoto.replace(/^data:image\/\w+;base64,/, "");
+                    imageSource = Buffer.from(base64Data, "base64");
+                }
+                else {
+                    // If it's a URL, pass it as a string
+                    imageSource = profilephoto;
+                }
+                const { faces, safeSearch } = yield analyzeImage(client, imageSource);
                 results.push({
                     userid,
                     results: { faces, safeSearch },
                 });
             }
             catch (error) {
-                if (error instanceof Error) {
-                    results.push({
-                        userid,
-                        results: { error: `Error analyzing photo: ${error.message}` },
-                    });
-                }
-                else {
-                    results.push({
-                        userid,
-                        results: { error: "An unknown error occurred" },
-                    });
-                }
+                results.push({
+                    userid,
+                    results: {
+                        error: error instanceof Error ? `Error analyzing photo: ${error.message}` : "An unknown error occurred",
+                    },
+                });
             }
         }
         return results;
     });
 }
-// Ensure the analyze function is the default export
 exports.default = analyze;

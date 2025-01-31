@@ -1,3 +1,4 @@
+import type { protos } from "@google-cloud/vision";
 interface User {
     userid: string;
     profilephoto: string;
@@ -5,8 +6,8 @@ interface User {
 interface AnalysisResult {
     userid: string;
     results: {
-        faces?: any[];
-        safeSearch?: any;
+        faces?: protos.google.cloud.vision.v1.IFaceAnnotation[];
+        safeSearch?: protos.google.cloud.vision.v1.ISafeSearchAnnotation;
         error?: string;
     };
 }
